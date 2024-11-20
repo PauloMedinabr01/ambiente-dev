@@ -1,3 +1,4 @@
+# Usa a imagem base PHP 8.3 com Alpine 3.20
 FROM php:8.3-fpm-alpine3.20
 
 # Mantenedor da imagem
@@ -14,9 +15,17 @@ RUN apk add --no-cache \
     libzip-dev \
     zlib-dev \
     nodejs \
-    npm && \
-    docker-php-ext-install gd zip pdo pdo_mysql && \
-    rm -rf /var/cache/apk/*
+    npm \
+    autoconf \
+    build-base \
+    && docker-php-ext-install \
+    gd \
+    zip \
+    pdo \
+    pdo_mysql \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && rm -rf /var/cache/apk/*
 
 # Instala o Composer mais recente
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
